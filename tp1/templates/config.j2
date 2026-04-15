@@ -1,0 +1,9 @@
+[app]
+host     = {{ inventory_hostname }}
+env      = development
+user     = {{ app_user }}
+app_dir  = {{ app_dir }}
+
+[system]
+os       = {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }}
+python   = {{ ansible_facts['python_version'] }}

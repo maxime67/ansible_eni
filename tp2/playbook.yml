@@ -1,0 +1,48 @@
+---
+- name: TP2 - Installation et gestion de nginx via systemd
+  hosts: all
+  become: true
+
+  handlers:
+    - name: restart nginx
+      ansible.builtin.systemd:
+        name: nginx
+        state: restarted
+
+  tasks:
+    - name: Installer nginx
+      ansible.builtin.apt:
+        name: nginx
+        update_cache: true
+        state: present
+
+    # Sur container : ECHEC ici
+    # System has not been booted with systemd as init system (PID 1)
+    - name: Activer nginx au démarrage
+      ansible.builtin.systemd:
+        name: nginx
+        enabled: true
+        state: started
+
+    - name: Déployer la configuration nginx
+      ansible.builtin.template:
+        src: nginx.j2
+        dest: /etc/nginx/sites-available/default
+        mode: "0644"
+      notify: restart nginx
+
+    - name: Vérifier que nginx répond
+      ansible.builtin.uri:
+        url: "http://127.0.0.1"
+        status_code: 200
+      register: response
+
+    - name: Afficher le statut HTTP
+      ansible.builtin.debug:
+        msg: "nginx répond : HTTP {{ response.status }}"
+
+    - name: Vérifier que nginx a redémarré automatiquement après reboot
+      ansible.builtin.systemd:
+        name: nginx
+        state: started
+      register: nginx_status

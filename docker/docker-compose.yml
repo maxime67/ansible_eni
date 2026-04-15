@@ -3,29 +3,56 @@ services:
     build: .
     container_name: debian1
     hostname: debian1
+    # Donne au container toutes les capabilities Linux (SYS_ADMIN, etc.)
+    privileged: true
     ports:
       - "2221:22"
     networks:
       - ansible-net
+    # systemd a besoin d'écrire dans /run et /run/lock au démarragete
+    tmpfs:
+      - /run
+      - /run/lock
+    # Partage le namespace cgroup de l'hôte au lieu d'en créer un isolé
+    cgroup: host
+    # Monte le filesystem cgroup de l'hôte en lecture/écriture dans le container
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
 
   debian2:
     build: .
     container_name: debian2
     hostname: debian2
+    privileged: true
     ports:
       - "2222:22"
     networks:
       - ansible-net
+    tmpfs:
+      - /run
+      - /run/lock
+    cgroup: host
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
 
   debian3:
     build: .
     container_name: debian3
     hostname: debian3
+    privileged: true
     ports:
       - "2223:22"
     networks:
       - ansible-net
+    tmpfs:
+      - /run
+      - /run/lock
+    cgroup: host
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
 
 networks:
+  # Réseau bridge dédié — les containers se voient entre eux par leur hostname
+  # Ansible peut aussi les cibler en interne sans passer par les ports de l'hôte
   ansible-net:
     driver: bridge
