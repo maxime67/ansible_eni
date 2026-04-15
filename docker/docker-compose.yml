@@ -1,0 +1,31 @@
+services:
+  debian1:
+    build: .
+    container_name: debian1
+    hostname: debian1
+    ports:
+      - "2221:22"
+    networks:
+      - ansible-net
+
+  debian2:
+    build: .
+    container_name: debian2
+    hostname: debian2
+    ports:
+      - "2222:22"
+    networks:
+      - ansible-net
+
+  debian3:
+    build: .
+    container_name: debian3
+    hostname: debian3
+    ports:
+      - "2223:22"
+    networks:
+      - ansible-net
+
+networks:
+  ansible-net:
+    driver: bridge
