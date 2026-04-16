@@ -1,0 +1,7 @@
+---
+- hosts: dev-master,dev-slave
+  tasks:
+    - name: Désinstaller nano
+      apt:
+        name: nano
+        state: absent

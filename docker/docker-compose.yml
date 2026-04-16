@@ -7,6 +7,7 @@ services:
     privileged: true
     ports:
       - "2221:22"
+      - "8080:80"
     networks:
       - ansible-net
     # besoin d'écrire dans /run et /run/lock au démarragete
@@ -26,6 +27,7 @@ services:
     privileged: true
     ports:
       - "2222:22"
+      - "8081:80"
     networks:
       - ansible-net
     tmpfs:
@@ -35,23 +37,6 @@ services:
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
 
-  oraclelinux2:
-    build:
-      context: .
-      dockerfile: Dockerfile.oraclelinux
-    container_name: oraclelinux1
-    hostname: oraclelinux1
-    privileged: true
-    ports:
-      - "2223:22"
-    networks:
-      - ansible-net
-    tmpfs:
-      - /run
-      - /run/lock
-    cgroup: host
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
 networks:
   ansible-net:
     driver: bridge

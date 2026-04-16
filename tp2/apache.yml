@@ -1,0 +1,18 @@
+---
+- hosts: dev-master
+  tasks:
+    - name: Installer apache2
+      apt:
+        name: apache2
+        state: present
+
+    - name: Démarrer et activer apache2
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+
+    - name: Vérifier qu'apache répond en HTTP 200
+      uri:
+        url: http://localhost
+        status_code: 200

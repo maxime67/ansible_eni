@@ -1,0 +1,7 @@
+---
+- hosts: dev-master,dev-slave
+  tasks:
+    - name: Installer vim
+      apt:
+        name: vim
+        state: present
